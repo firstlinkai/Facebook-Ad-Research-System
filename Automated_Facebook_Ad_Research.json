@@ -1,0 +1,1213 @@
+{
+  "name": "Automated Facebook Ad Research",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        20,
+        420
+      ],
+      "id": "572eec72-db51-400c-83b5-664630033fe1",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0b7cee75-ca57-4946-971e-1f526b49324f",
+                    "leftValue": "={{ $json.snapshot.images[0].original_image_url }}",
+                    "rightValue": "https://scontent-ho",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Image"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.snapshot.videos[0].video_sd_url }}",
+                    "rightValue": "=https://video-",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "9dbbe6e7-fd80-44ab-88f0-ab438cfd997e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Video"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Text"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        660,
+        420
+      ],
+      "id": "e230319a-1862-4391-b03a-bf4b799e6a42",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1d74591-13e8-4c79-9a34-117cc6816dfb",
+              "leftValue": "={{ $json.advertiser.ad_library_page_info.page_info.likes }}",
+              "rightValue": 1000,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        460,
+        420
+      ],
+      "id": "7f578d49-11aa-421a-9bc6-6117bda5e0e1",
+      "name": "Filter For Likes"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1920,
+        1020
+      ],
+      "id": "d4775c67-59a5-4def-8b4c-16e26410a95c",
+      "name": "Wait",
+      "webhookId": "1cda7407-6321-4d8d-b532-19f42514eb63"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2100,
+        0
+      ],
+      "id": "95e5fdca-98dc-4221-9590-0f0a8c085a5b",
+      "name": "Wait1",
+      "webhookId": "1cda7407-6321-4d8d-b532-19f42514eb63"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.snapshot.videos[0].video_sd_url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1380,
+        220
+      ],
+      "id": "cbb9f2f7-1619-4a45-9555-636cc2fc1921",
+      "name": "Download Video"
+    },
+    {
+      "parameters": {
+        "name": "Example File",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1600,
+        220
+      ],
+      "id": "6f44c0b6-d4b5-416c-959d-6f6828a90558",
+      "name": "Upload Video to Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "7cpKOsLrsioEzfBv",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1880,
+        760
+      ],
+      "id": "9bc1ea24-174f-42d1-bf91-6273f2785cd0",
+      "name": "Wait2",
+      "webhookId": "1cda7407-6321-4d8d-b532-19f42514eb63"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/XtaWFhbtfxyzqrFmd/run-sync-get-dataset-items",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer <yourApiKey>"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"count\": 200,\n    \"period\": \"last7d\",\n    \"scrapeAdDetails\": true,\n    \"scrapePageAds.activeStatus\": \"active\",\n    \"urls\": [\n        {\n            \"url\": \"https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&is_targeted_country=false&media_type=all&q=%22ai%20automation%22&search_type=keyword_exact_phrase&start_date[min]=2025-06-12&start_date[max]\",\n            \"method\": \"GET\"\n        }\n    ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        420
+      ],
+      "id": "2a39fd41-81c5-4041-8a91-cc4310fb9fc4",
+      "name": "Run Ad Library Scraper"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        940,
+        -20
+      ],
+      "id": "621bd716-61ae-4d74-bb06-9456041951a7",
+      "name": "Loop Over Image Ads"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        920,
+        1000
+      ],
+      "id": "5cc1c412-48b4-40fe-9aaa-ec30450a8fad",
+      "name": "Loop Over Text Ads"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        940,
+        420
+      ],
+      "id": "7f3f6ccc-e485-4f5f-9fe1-868ac136cd76",
+      "name": "Loop Over Video Ads"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/upload/v1beta/files",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "<yourApiKey>"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Goog-Upload-Protocol",
+              "value": "resumable"
+            },
+            {
+              "name": "X-Goog-Upload-Command",
+              "value": "start"
+            },
+            {
+              "name": "X-Goog-Upload-Header-Content-Length",
+              "value": "={{ $json.size }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1860,
+        220
+      ],
+      "id": "22eed872-368a-4ddf-9e2b-948c7969d732",
+      "name": "Begin Gemini Upload Session"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Upload Video to Drive').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2100,
+        220
+      ],
+      "id": "903e95a5-33db-4651-a201-ebc21d32510d",
+      "name": "Redownload Video",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "7cpKOsLrsioEzfBv",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.headers['x-goog-upload-url'] }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "<yourApiKey>"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Length",
+              "value": "={{ $('Upload Video to Drive').item.json.size }}"
+            },
+            {
+              "name": "X-Goog-Upload-Offset",
+              "value": "0"
+            },
+            {
+              "name": "X-Goog-Upload-Command",
+              "value": "upload, finalize"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1380,
+        480
+      ],
+      "id": "c813c07f-1880-405e-a82b-f192d2e25dae",
+      "name": "Upload Video to Gemini"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "<yourApiKey>"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Describe this video in excruciating detail. Do not output anything but the description of the video.\"\n        },\n        {\n          \"file_data\": {\n            \"mime_type\": \"{{ $json.file.mimeType }}\",\n            \"file_uri\": \"{{ $json.file.uri }}\"\n          }\n        }\n      ]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1860,
+        480
+      ],
+      "id": "2408b298-ff3c-4e7d-a196-62e61bb6e86b",
+      "name": "Analyze Video with Gemini",
+      "retryOnFail": true,
+      "waitBetweenTries": 15
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a highly capable ad analysis bot. You break down Facebook ads with precision, surface key insights, and repurpose the messaging.",
+              "role": "system"
+            },
+            {
+              "content": "You're given a scraped JavaScript object from a Facebook Ad Library entry. From this input, you must:\n\nCreate a comprehensive summary analyzing the ad’s structure, content, creative strategy, targeting signals, tone, and techniques.\n\nGenerate a rewritten version of the ad copy, spun with a new tone, audience angle, or context—but keeping the original strategic essence.\n\nThis task is for competitive intelligence. We run an advertising agency and continually monitor competitor activity to spot creative patterns, hooks, and angles that work.\n\nOUTPUT FORMAT (strictly JSON):\n\njson\nCopy\nEdit\n{\n  \"summary\": \"\",\n  \"rewrittenAdCopy\": \"\"\n}\nSTYLE & WRITING RULES\n\nUse the classic Western style of writing: clear, exact, and curious. Even when unpacking odd or experimental topics, stay sharp and focused.\n\nMatch formality to novelty:\n\nIf the ad is strange, esoteric, or experimental → use academic precision and seriousness.\n\nIf the ad is mainstream, relatable, or dull → take liberties with tone. Add humor, make cuts, experiment with sentence structure.\n\nAvoid all hedging. Make direct, declarative statements, even if they overstate. Strong claims are preferred over weak nuance.\n\nUse casual contractions and abbreviations:\n\n\"info\" instead of \"information\"\n\n\"app\" instead of \"application\"\n\n\"q\" instead of \"question\"\n\n\"vid\" instead of \"video\"\n\n\"SF\" instead of \"San Francisco\"\n\nNever use rhetorical questions.\n\nNever use em dashes. Use colons, commas, or parentheses instead.\n\nThe summary should break down:\n\nvisual layout & format\n\ntone & language\n\npersuasion structure (problem → solution → outcome)\n\nintended audience & positioning clues\n\nad category, vertical, or cultural niche\n\nCTA hierarchy\n\nemotional drivers & urgency framing\n\nThe rewritten ad copy should adapt the original concept using a different tone, persona, audience use-case, or creative frame—ready to drop into your own campaigns."
+            },
+            {
+              "content": "=JSON scrape:\n\n{{ $('Loop Over Video Ads').item.json.toJsonString() }}\n\nVideo description:\n\n{{ $json.candidates[0].content.parts[0].text }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1400,
+        760
+      ],
+      "id": "29e77971-6b76-4e0d-b260-1da52809b92b",
+      "name": "Output Video Summary",
+      "credentials": {
+        "openAiApi": {
+          "id": "IFuS0OMBdaTai4J9",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "text": "What's in this image? Be extremely comprehensive.",
+        "imageUrls": "={{ $json.snapshot.images[0].original_image_url }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1360,
+        0
+      ],
+      "id": "3e01ecb3-b163-47bf-8725-88b5f80ed3be",
+      "name": "Analyze Image",
+      "credentials": {
+        "openAiApi": {
+          "id": "IFuS0OMBdaTai4J9",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a highly capable ad analysis bot. You break down Facebook ads with precision, surface key insights, and repurpose the messaging.",
+              "role": "system"
+            },
+            {
+              "content": "TASK\nYou're given a scraped JavaScript object from a Facebook Ad Library entry. Your job is to:\n\nAnalyze the ad and write a comprehensive, insightful summary.\n\nRepurpose (spin) the ad copy into a rewritten version that reflects your own tone, audience, or positioning.\n\nWe run a performance-focused ad agency, and this is part of our competitive intelligence process. We're tracking what others are testing, scaling, and dropping.\n\nOUTPUT FORMAT (strictly JSON):\n{\n  \"summary\": \"\",\n  \"rewrittenAdCopy\": \"\"\n}\n\nSTYLE & VOICE RULES\n\nUse the classic Western writing style: analytical, precise, and inquisitive.\n\nMatch formality to novelty. If the ad is weird or unconventional, use formal academic tone. If it’s familiar/safe, lean into playfulness, typographical stunts, subtle jokes, etc.\n\nNever hedge. Make bold, confident statements. Don’t qualify or soften your take.\n\nUse casual contractions and abbreviations (“app” instead of “application”, “vid” for “video”, “SF” for “San Francisco”, “q” for “question”).\n\nNo rhetorical questions. Ever.\n\nDo not use em dashes. Use colons, parentheses, or commas instead.\n\nThe summary should break down structure, creative format, visual hierarchy, persuasion techniques, call-to-action placement, tone of voice, audience targeting clues, cultural references, and emotional triggers.\n\nThe rewritten ad copy should take the core angle and reposition it with different tone, framing, or use-case emphasis. Make it useful for remixing in future tests."
+            },
+            {
+              "content": "=JSON scrape:\n\n{{ $('Loop Over Image Ads').item.json.toJsonString() }}\n\nImage description:\n\n{{ $json.content }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1520,
+        0
+      ],
+      "id": "45cb3b4f-74d8-484b-a143-aa4bbb6bbad9",
+      "name": "Output Image Summary",
+      "credentials": {
+        "openAiApi": {
+          "id": "IFuS0OMBdaTai4J9",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a smart, helpful ad analysis bot built for strategic insight.\nYou specialize in breaking down and reinterpreting Facebook advertisements.\n\nYour core mission is to assist an ad agency in analyzing the creative direction, message structure, and psychological hooks used by competing advertisers.",
+              "role": "system"
+            },
+            {
+              "content": "You’ll receive a scraped JavaScript object representing an ad from the Facebook Ad Library. Your job is to produce two things:\n\nA comprehensive, analytical summary of the ad’s structure, strategy, and intent.\n\nA rewritten version of the ad copy (a creative spin that retains the original message but reframes it for testing or repurposing).\n\nOUTPUT FORMAT (strict JSON):\n\njson\nCopy\nEdit\n{\n  \"summary\": \"\",\n  \"rewrittenAdCopy\": \"\"\n}\nSTYLE & RULES\n\nWriting Style: Use the classic Western style—analytical, sharp, and thoughtful.\n\nMatch formality to novelty:\n\nIf the ad is bizarre, avant-garde, or strange: go formal, restrained, clinical.\n\nIf the ad is familiar, mainstream, or dull: loosen up with humor, idiomatic phrasing, clever cuts, or even stylistic play.\n\nMake bold claims. Avoid hedging (e.g., don’t use “might,” “could be,” or “seems like”). Overstatement > Understatement.\n\nUse casual contractions and shortened forms:\n\nExamples: “SF” instead of “San Francisco”, “app” instead of “application”, “info” for “information”, “vid” for “video”, “q” for “question”, “thx” for “thanks”.\n\nNo rhetorical questions.\n\nDo not use em dashes. Stick to colons, commas, or parentheses.\n\nIn the summary, break down the ad's:\n\nCreative format and layout\n\nCopy structure (hook > insight > CTA)\n\nTone, language, and implied emotional drivers\n\nPositioning, audience clues, product angle\n\nCTA placement and urgency triggers\n\nCultural or market context\n\nIn the rewritten ad copy, retain the strategic core while adjusting tone, format, or persona—so it’s usable for remixed campaigns or fresh test variants."
+            },
+            {
+              "content": "={{ $json.toJsonString() }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1220,
+        1020
+      ],
+      "id": "f596f229-e056-42de-bd35-b61632b3e256",
+      "name": "Output Text Summary",
+      "credentials": {
+        "openAiApi": {
+          "id": "IFuS0OMBdaTai4J9",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 15
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        480
+      ],
+      "id": "c19245a1-e05b-4494-980d-d9076c666b56",
+      "name": "Wait3",
+      "webhookId": "ac11c85a-5b73-4a29-9667-615e811a5ad8"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1qewWe0DgZVddmosxIAlWEskX1oqUf1n3Oee6Xq6z-j4",
+          "mode": "list",
+          "cachedResultName": "Content Repost",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qewWe0DgZVddmosxIAlWEskX1oqUf1n3Oee6Xq6z-j4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qewWe0DgZVddmosxIAlWEskX1oqUf1n3Oee6Xq6z-j4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "user",
+              "displayName": "user",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Creator",
+              "displayName": "Creator",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Duration",
+              "displayName": "Duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1720,
+        760
+      ],
+      "id": "fc15e07a-c382-4534-af84-c69a5eb73e14",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nN7sbDlPLKuJeJqb",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1qewWe0DgZVddmosxIAlWEskX1oqUf1n3Oee6Xq6z-j4",
+          "mode": "list",
+          "cachedResultName": "Content Repost",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qewWe0DgZVddmosxIAlWEskX1oqUf1n3Oee6Xq6z-j4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qewWe0DgZVddmosxIAlWEskX1oqUf1n3Oee6Xq6z-j4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "user",
+              "displayName": "user",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Creator",
+              "displayName": "Creator",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Duration",
+              "displayName": "Duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1840,
+        0
+      ],
+      "id": "91bd92d1-5252-4187-8b9d-413234674fab",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nN7sbDlPLKuJeJqb",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1qewWe0DgZVddmosxIAlWEskX1oqUf1n3Oee6Xq6z-j4",
+          "mode": "list",
+          "cachedResultName": "Content Repost",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qewWe0DgZVddmosxIAlWEskX1oqUf1n3Oee6Xq6z-j4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qewWe0DgZVddmosxIAlWEskX1oqUf1n3Oee6Xq6z-j4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "user",
+              "displayName": "user",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Creator",
+              "displayName": "Creator",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Duration",
+              "displayName": "Duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1740,
+        1020
+      ],
+      "id": "fc7202cc-557a-41fe-8756-50c075dbc410",
+      "name": "Google Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nN7sbDlPLKuJeJqb",
+          "name": "Google Sheets account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Run Ad Library Scraper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter For Likes": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Image Ads",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Video Ads",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Text Ads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Text Ads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Image Ads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Video": {
+      "main": [
+        [
+          {
+            "node": "Upload Video to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Video to Drive": {
+      "main": [
+        [
+          {
+            "node": "Begin Gemini Upload Session",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Video Ads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Ad Library Scraper": {
+      "main": [
+        [
+          {
+            "node": "Filter For Likes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Image Ads": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Analyze Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Text Ads": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Output Text Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Video Ads": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Begin Gemini Upload Session": {
+      "main": [
+        [
+          {
+            "node": "Redownload Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redownload Video": {
+      "main": [
+        [
+          {
+            "node": "Upload Video to Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Video to Gemini": {
+      "main": [
+        [
+          {
+            "node": "Wait3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Video with Gemini": {
+      "main": [
+        [
+          {
+            "node": "Output Video Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Image": {
+      "main": [
+        [
+          {
+            "node": "Output Image Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait3": {
+      "main": [
+        [
+          {
+            "node": "Analyze Video with Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output Video Summary": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output Image Summary": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output Text Summary": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6854f401-4710-4176-86ab-0c5239fc751b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4275106c8fd02c2533edab3f7741b7db420af0691c825fa5d46bbabd00ca51b7"
+  },
+  "id": "xe0Bnqvdhw4VYnP0",
+  "tags": []
+}
